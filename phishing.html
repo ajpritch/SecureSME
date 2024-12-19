@@ -42,14 +42,16 @@
     <div class="container px-4 px-lg-5">
         <!-- Heading Row --> 
         <div class="row gx-4 gx-lg-5 align-items-center my-5">
-            <div class="col-lg-7"><img class="img-fluid rounded mb-4 mb-lg-0" src="phishingraw.jpg" alt="Blury lines of code" style="max-height: 400px; width: auto; display: block; margin: 0 auto;"/></div>
+            <div class="col-lg-7"><img class="img-fluid rounded mb-4 mb-lg-0" src="phishingraw.jpg" alt="Password on screen" style="max-height: 400px; width: auto; display: block; margin: 0 auto;"/></div>
             <div class="col-lg-5">
-                <h1 class="font-weight-light">Phishing Awareness</h1>
-                <p>Protecting yourself and your company from the common phishing attack.</p>
+                <h1 class="font-weight-light">Creating Strong Passwords</h1>
+                <p>What makes password secure and how to make a strong password.</p>
             </div>
         </div>
 
         <hr style="border: 1px solid black;"><br>
+
+        <!-- Page Body -->
         <!-- Page Body -->
         <h1>What is Phishing</h1>
         <p>Phishing is a form a crime where the primary goal is to gain access to information by taking advantage of peoples natural trust and is a leading cause of data breaches.</p>
@@ -79,17 +81,21 @@
         </p>
         <p>More information is available from the <a href="https://www.ncsc.gov.uk/collection/phishing-scams">National Cyber Security Center</a>.</p>
         <br>
+        <hr style="border: 1px solid black;"><br>
 
-    <hr style="border: 1px solid black;"><br>
-    <h1>Test your knowledge</h1>
-<!-- Content Row for Input Validation Boxes -->
+        <h1>Test your knowledge</h1> 
+
+          <!--provide key-->
+          <div id="completionKey" class="mt-4"></div>
+
+<!-- Questions -->
 <div class="row gx-4 gx-lg-5">
     <div class="col-md-4 mb-5">
         <div class="card h-100">
             <div class="card-body">
                 <h2 class="card-title">Question 1</h2>
-                <p class="card-text">What are attackers trying to access with phishing?</p>
-                <input type="text" id="userInput1" class="form-control" placeholder="***********">
+                <p class="card-text">What are attackers trying to access with phishing?</p><br>
+                <input type="text" id="userInput1" class="form-control" placeholder="*********** or ****">
                 <button id="checkButton1" class="btn btn-primary mt-3">Check</button>
                 <div id="result1" class="mt-3"></div>
             </div>
@@ -112,7 +118,7 @@
         <div class="card h-100">
             <div class="card-body">
                 <h2 class="card-title">Question 3</h2>
-                <p class="card-text">What should you check for in the sender's email address?</p>
+                <p class="card-text">What should you check for in the senders email address?</p>
                 <input type="text" id="userInput3" class="form-control" placeholder="***-***** **********">
                 <button id="checkButton3" class="btn btn-primary mt-3">Check</button>
                 <div id="result3" class="mt-3"></div>
@@ -121,7 +127,12 @@
     </div>
 </div>
 
-        <br><br><br>
+       <!-- Entropy estimator-->
+       <hr style="border: 1px solid black;"><br> 
+           
+        <br>
+        <br>
+        <br>
 
         <!-- Footer-->
         <footer style="width: 100%; position: absolute; left: 0; right: 0; bottom: 1;" class="py-5 bg-dark">
@@ -160,38 +171,129 @@
         <!-- Input Validation Script -->
 <!-- JavaScript for Input Validation -->
 <script>
+// Variables to track correct answers
+let isQuestion1Correct = false;
+let isQuestion2Correct = false;
+let isQuestion3Correct = false;
+
+// Function to check if all questions are correct
+function checkCompletion() {
+    if (isQuestion1Correct && isQuestion2Correct && isQuestion3Correct) {
+        document.getElementById('completionKey').innerHTML = `
+            <div class="alert alert-success">
+                Congratulations! You answered all 3 questions correctly.<br>
+                Your key is: <strong>Gone Phishing</strong>
+            </div>`;
+    }
+}
+
+// Function to check the answer and update the correct answer status
+function checkAnswer(userInput, correctAnswers, resultDiv, nextInputId, questionIndex) {
+    // Check if the user input matches any of the correct answers
+    if (correctAnswers.includes(userInput.toLowerCase())) {
+        resultDiv.innerHTML = '<div class="alert alert-success">Correct!</div>';
+        // Move to the next input field if provided
+        if (nextInputId) {
+            document.getElementById(nextInputId).focus();
+        }
+        
+        // Update the correct answer status
+        if (questionIndex === 1) isQuestion1Correct = true;
+        if (questionIndex === 2) isQuestion2Correct = true;
+        if (questionIndex === 3) isQuestion3Correct = true;
+
+        return true;
+    } else {
+        resultDiv.innerHTML = '<div class="alert alert-danger">Incorrect. Please try again.</div>';
+        return false;
+    }
+}
+
     document.getElementById('checkButton1').addEventListener('click', function() {
         const userInput = document.getElementById('userInput1').value.trim();
         const resultDiv = document.getElementById('result1');
-
-        if (userInput.toLowerCase() === 'information') {
-            resultDiv.innerHTML = '<div class="alert alert-success">Correct!</div>';
-        } else {
-            resultDiv.innerHTML = '<div class="alert alert-danger">Incorrect. Please try again.</div>';
-        }
+        // Accept both "10" and "ten" as correct answers
+        checkAnswer(userInput, ['information', 'info'], resultDiv, 'userInput2', 1); // Move to Question 2
+        checkCompletion();
     });
 
     document.getElementById('checkButton2').addEventListener('click', function() {
         const userInput = document.getElementById('userInput2').value.trim();
         const resultDiv = document.getElementById('result2');
-
-        if (userInput.toLowerCase() === 'zero trust') {
-            resultDiv.innerHTML = '<div class="alert alert-success">Correct!</div>';
-        } else {
-            resultDiv.innerHTML = '<div class="alert alert-danger">Incorrect. Please try again.</div>';
-        }
+        checkAnswer(userInput, ['zero trust', 'no trust'], resultDiv, 'userInput3', 2); // Move to Question 3
+        checkCompletion();
     });
 
     document.getElementById('checkButton3').addEventListener('click', function() {
         const userInput = document.getElementById('userInput3').value.trim();
         const resultDiv = document.getElementById('result3');
+        checkAnswer(userInput, ['non-ascii characters', 'ascii', 'ascii characters'], resultDiv, null, 3); // No next input after Question 3
+        checkCompletion();
+    });
 
-        if (userInput.toLowerCase() === 'non-ascii characters') {
-            resultDiv.innerHTML = '<div class="alert alert-success">Correct!</div>';
-        } else {
-            resultDiv.innerHTML = '<div class="alert alert-danger">Incorrect. Please try again.</div>';
+    // Add event listeners for Enter key
+    document.getElementById('userInput1').addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            document.getElementById('checkButton1').click();
         }
     });
+
+    document.getElementById('userInput2').addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            document.getElementById('checkButton2').click();
+        }
+    });
+
+    document.getElementById('userInput3').addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            document.getElementById('checkButton3').click();
+        }
+    });
+
+    // Password Tester
+    document.getElementById('calculateEntropy').addEventListener('click', function() {
+    const password = document.getElementById('passwordInput').value.trim();
+    const resultDiv = document.getElementById('entropyResult');
+
+    if (password === "") {
+        resultDiv.innerHTML = '<div class="alert alert-danger">Please enter a password.</div>';
+        return;
+    }
+
+    // Calculate the character set size
+    let charsetSize = 0;
+    if (/[a-z]/.test(password)) charsetSize += 26; // Lowercase
+    if (/[A-Z]/.test(password)) charsetSize += 26; // Uppercase
+    if (/[0-9]/.test(password)) charsetSize += 10; // Numbers
+    if (/[\W_]/.test(password)) charsetSize += 32; // Special characters
+    if (/[\x80-\xFF]/.test(password)) charsetSize += 128; // Extended ASCII
+
+    // Calculate entropy
+    const entropy = Math.log2(charsetSize) * password.length;
+
+    // Display result
+    resultDiv.innerHTML = `
+        <div class="alert alert-info">
+            <strong>Entropy:</strong> ${entropy.toFixed(2)} bits<br>
+            <strong>Analysis:</strong> ${analyzeEntropy(entropy)}
+        </div>`;
+});
+
+// Provide feedback based on entropy
+function analyzeEntropy(entropy) {
+    if (entropy < 28) {
+        return "Very Weak (Consider revising your password)";
+    } else if (entropy < 35) {
+        return "Weak (Not recommended for sensitive accounts)";
+    } else if (entropy < 60) {
+        return "Moderate (Usable but could be improved)";
+    } else if (entropy < 80) {
+        return "Strong (Good for most purposes)";
+    } else {
+        return "Very Strong (Excellent security)";
+    }
+}
+
 </script>
     </body>
 </html>
